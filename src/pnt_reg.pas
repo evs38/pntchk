@@ -1,3 +1,4 @@
+{$IFDEF FPC}{$MODE TP}{$ENDIF}
 uses bvtools,tpstring;
 var
  f1: text;

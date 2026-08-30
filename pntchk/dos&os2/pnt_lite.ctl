@@ -1,5 +1,5 @@
 ;
-;   Professional pointsegment checker v1.00.rc6 (lite) configuration file
+;   Professional pointsegment checker v1.01 (lite) configuration file
 ;
 ;-----------------------------------------------------------------------------
 ;   Секция технических настpоек чекеpа

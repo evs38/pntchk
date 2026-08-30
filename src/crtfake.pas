@@ -49,11 +49,15 @@ var
   CheckEOF: Boolean;      { Enable Ctrl-Z }
   DirectVideo: Boolean;   { Enable direct video addressing }
   CheckSnow: Boolean;     { Enable snow filtering }
-  LastMode: Word = 3;         { Current text mode }
-  TextAttr: Byte = $07;         { Current text attribute }
-  WindMin: Word  = $0;          { Window upper left coordinates }
-  WindMax: Word  = $184f;          { Window lower right coordinates }
+  LastMode: Word;         { Current text mode }
+  TextAttr: Byte;         { Current text attribute }
+  WindMin: Word;          { Window upper left coordinates }
+  WindMax: Word;          { Window lower right coordinates }
   { FPC Specific for large screen support }
+{$IFNDEF FPC}
+Type DWord = LongInt;
+Var
+{$ENDIF}
   WindMinX : DWord;
   WindMaxX : DWord;
   WindMinY : DWord;
@@ -210,4 +214,9 @@ procedure AssignCrt(var F: Text);
 begin
 end;
 
+begin
+  LastMode := 3;
+  TextAttr := $07;
+  WindMin  := $0;
+  WindMax  := $184f;
 end.

@@ -1,4 +1,4 @@
-# PNTCHK, v1.00+ (release)
+# PNTCHK, v1.01 (release)
 ## Professional pointsegment checker
 Copyright (c) 1997,2004 Pavel I.Osipov (2:5020/770@fidonet)<br>Manual translation (c) 2002-2004 Pavel I.Osipov, Sergey Tsvetkov, Slava Belkov, Alexei Klimenko, Katerina Znamenskaya<br>All rights reserved
 
@@ -23,4 +23,4 @@ PNTCHK ...
 * creates message reports in \*.MSG-format and addresses them to the sender of the segment and (possibly) to the pointlist coordinator;
 * performs many other tasks.
 
-PNTCHK can easily be installed on you system. Versions of PNTCHK for different OS (PNTCHK v.1.00+ is available for DOS16, DOS32, OS/2, WIN32, Linux and FreeBSD) are completely identical in their call and output, use the same format of the nodelist index, logfile, so they can be used at the same time.
+PNTCHK can easily be installed on you system. Versions of PNTCHK for different OS (PNTCHK v.1.01 is available for DOS16, DOS32, OS/2, WIN32, WIN64, Linux, FreeBSD, NetBSD, OpenBSD and macOS) are completely identical in their call and output, use the same format of the nodelist index, logfile, so they can be used at the same time.

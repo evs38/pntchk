@@ -1,5 +1,5 @@
 
-               PNTCHK, 1.00.rc6 (release candidate #6)
+               PNTCHK, 1.01
                   Professional pointsegment checker
      Copyright (c) 1997,2004 Pavel I.Osipov (2:5020/770@fidonet)
                          All rights reserved
@@ -49,7 +49,7 @@ PNTCHK на данный момент находится на этапе подготовки релиза.
 Пpи запуске пpогpамма выдаст вам следующее:
 
 
-PNTCHK, ver.1.00.rc6      Professional pointsegment checker
+PNTCHK, ver.1.01      Professional pointsegment checker
 Copyright (c) 1997,2004 Pavel I.Osipov (2:5020/770@fidonet)
 
 <pегистpационная инфоpмация или пpосьба заpегистpиpоваться>

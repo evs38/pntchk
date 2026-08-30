@@ -1,4 +1,4 @@
-{$MODE TP}
+{$IFDEF FPC}{$MODE TP}{$ENDIF}
 (* {$M 65520,0,655200} *)
 Unit CTLM_me;
 Interface

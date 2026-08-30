@@ -1,29 +1,109 @@
 Program execgood;
-Uses Crt,SysUtils;
+Uses Crt, {$IFDEF FPC} SysUtils {$ELSE} Dos {$ENDIF};
 var segfl: text;
     endstr,endstr2: string;
+{ One name per platform, spelled once.  fpc and Virtual Pascal do not agree
+  on the symbols, so they are folded into ours first. }
+{$IFDEF WINDOWS} {$DEFINE PLATWIN} {$ENDIF}
+{$IFDEF WIN32}   {$DEFINE PLATWIN} {$ENDIF}
+{$IFDEF DPMI}    {$DEFINE PLATD32} {$ENDIF}
+{$IFDEF DOS32}   {$DEFINE PLATD32} {$ENDIF}
+{$IFDEF EMX}     {$DEFINE PLATEMX} {$ENDIF}
+{$IFDEF LINUX}   {$DEFINE PLATLNX} {$ENDIF}
+{$IFDEF BSD}     {$DEFINE PLATBSD} {$ENDIF}
+
 const
   NameProg = 'EXECGOOD'
         {$IFDEF WIN32} +'/W32' {$ENDIF}
         {$IFDEF WIN64} +'/W64' {$ENDIF}
-        {$IFDEF DPMI} +'/32' {$ENDIF}
+        {$IFDEF DPMI} +'/32' {$ENDIF} {$IFDEF DOS32} +'/32' {$ENDIF}
         {$IFDEF LINUX} +'/LNX' {$ENDIF}
         {$IFDEF BSD} +'/BSD' {$ENDIF}
         {$IFDEF OS2}{$IFDEF EMX} +'/EMX' {$ELSE} +'/2' {$ENDIF}
         {$ENDIF}
         ;
-  {$IFDEF WINDOWS}  namefprog = 'W'; {$ENDIF}
-  {$IFDEF EMX}    namefprog = 'E'; {$ENDIF}
-  {$IFDEF DPMI}  namefprog = 'P'; {$ENDIF}
-  {$IFDEF LINUX}  namefprog = '.LNX'; {$ENDIF}
-  {$IFDEF BSD} namefprog = '.BSD'; {$ENDIF}
+{$IFDEF PLATWIN} namefprog = 'EXECGOOW.EXE'; {$DEFINE GOTNAME} {$ENDIF}
+{$IFDEF PLATEMX} namefprog = 'EXECGOOE.EXE'; {$DEFINE GOTNAME} {$ENDIF}
+{$IFDEF PLATD32} namefprog = 'EXECGOOP.EXE'; {$DEFINE GOTNAME} {$ENDIF}
+{$IFDEF PLATLNX} namefprog = 'EXECGOOD.LNX'; {$DEFINE GOTNAME} {$ENDIF}
+{$IFDEF PLATBSD} namefprog = 'EXECGOOD.BSD'; {$DEFINE GOTNAME} {$ENDIF}
+{$IFNDEF GOTNAME} namefprog = 'EXECGOOD.EXE'; {$ENDIF}
   Version = '0.12.beta';
+  {dayof: array[1..7] of string[3] = ('Mon','Tue','Wed','Thu','Fri','Sat','Sun');}
+  monthname: array[1..12] of string[3] = ('Jan','Fer','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
+
+Function XStr(L:LongInt):String;
+Var
+ SS:String;
+Begin
+ Str(L,SS);
+ XStr:=SS;
+End;
+
+Function shortname(fullname: string): string;
+{$IFDEF FPC}
+begin
+    shortname:=ExtractFileName(fullname)
+end;
+{$ELSE}
+var i:integer;
+begin
+    i:=length(fullname)+1;
+    repeat
+      dec(i)
+    until (fullname[i]='\') or (fullname[i]='/') or (fullname[i]=':') or (i=0);
+    if i>0 then delete(fullname,1,i);
+    shortname:=fullname
+end;
+{$ENDIF}
+
+function LeadingZero(w : Word) : String;
+ var
+   s : String;
+ begin
+   Str(w:0,s);
+   if Length(s) = 1 then
+     s := '0' + s;
+   LeadingZero := s;
+ end;
+
+Function returndatetime(fn: string): string;
+{ fn is the file segfl is open on: fpc dates it by name, the old road by
+  the open handle. }
+{$IFDEF FPC}
+begin
+   returndatetime:=FormatDateTime('DD-MM-YYYY HH:MM',FileDateToDateTime(FileAge(fn)))
+end;
+{$ELSE}
+var tplstr: string;
+    ftime : Longint; { For Get/SetFTime}
+    dt : DateTime; { For Pack/UnpackTime}
+begin
+   tplstr:='';
+   GetFTime(segfl,ftime); { Get creation time }
+   UnpackTime(ftime,dt);
+   with dt do
+     begin
+      tplstr:=tplstr+leadingzero(day);
+      tplstr:=tplstr+'-';
+      tplstr:=tplstr+leadingzero(month);
+      tplstr:=tplstr+'-';
+      tplstr:=tplstr+xstr(year);
+      tplstr:=tplstr+' ';
+      tplstr:=tplstr+leadingzero(hour);
+      tplstr:=tplstr+':';
+      tplstr:=tplstr+leadingzero(min)
+     end;
+  returndatetime:=tplstr
+end;
+{$ENDIF}
 
 begin
   TextColor (White);
   Write (nameprog);
   TextColor(LightCyan);
-  Writeln ('    An example utility for PNTCHK v'+version);
+  Writeln ({$IFDEF VIRTUALPASCAL} {$IFDEF EMX} ''+ {$ELSE} ''+ {$ENDIF} {$ELSE} '    '+
+           {$ENDIF}'    An example utility for PNTCHK v'+version);
   TextColor(Yellow);
   Writeln ('Copyright (c) 1997 Pavel I.Osipov (2:5020/770.0@fidonet)');
   WriteLn;
@@ -34,8 +114,7 @@ begin
       writeln('Professional pointsegment checker, v'+version+' and later');
       writeln;
       textcolor(15);
-      write('Usage: EXECGOOD'+namefprog+{$IFNDEF UNIX}'.EXE'+
-                      {$ENDIF}' <new_segment_file> <old_segment_file> <outfile>');
+      write('Usage: '+namefprog+' <new_segment_file> <old_segment_file> <outfile>');
       textcolor(7); writeln;
       halt
     end;
@@ -49,7 +128,7 @@ begin
     writeln('Error opening segment file : ',paramstr(1));
     halt
   end;
- endstr:=endstr+FormatDateTime('DD-MM-YYYY HH:MM',FileDateToDateTime(FileAge(paramstr(1))));
+ endstr:=endstr+returndatetime(paramstr(1));
  close(segfl);
 
 if (paramstr(2)<>'%o') and (paramstr(2)<>'%O') then
@@ -63,7 +142,7 @@ if (paramstr(2)<>'%o') and (paramstr(2)<>'%O') then
     writeln('Error opening old segment file : ',paramstr(2));
     halt
   end;
- endstr2:=FormatDateTime('DD-MM-YYYY HH:MM',FileDateToDateTime(FileAge(paramstr(2))));
+ endstr2:=returndatetime(paramstr(2));
  close(segfl)
 
  end;
@@ -76,16 +155,16 @@ if (paramstr(2)<>'%o') and (paramstr(2)<>'%O') then
     halt
   end;
 
-    writeln(segfl,'New segment file "'+ExtractFileName(paramstr(1))+'" dated '+endstr+' was accepted');
+ writeln(segfl,'New segment file "'+shortname(paramstr(1))+'" dated '+endstr+' was accepted');
 if (paramstr(2)<>'%o') and (paramstr(2)<>'%O') then writeln(segfl,'instead of old segment file "'+
-    ExtractFileName(paramstr(2))+'" dated '+endstr2);
+    shortname(paramstr(2))+'" dated '+endstr2);
 
  close(segfl);
 
  textcolor(white);
 
-    writeln('New segment file "'+ExtractFileName(paramstr(1))+'" dated '+endstr+' was accepted');
+ writeln('New segment file "'+shortname(paramstr(1))+'" dated '+endstr+' was accepted');
 if (paramstr(2)<>'%o') and (paramstr(2)<>'%O') then writeln('instead of old segment file "'+
-    ExtractFileName(paramstr(2))+'" dated '+endstr2)
+    shortname(paramstr(2))+'" dated '+endstr2)
 
 end.

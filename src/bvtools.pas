@@ -1,4 +1,4 @@
-{$MODE TP}
+{$IFDEF FPC}{$MODE TP}{$ENDIF}
 Unit BVTools;{FOR OS/2}
 Interface
 Uses {$IFDEF BW} CrtFake {$ELSE} Crt {$ENDIF} ;
@@ -6,21 +6,21 @@ Uses {$IFDEF BW} CrtFake {$ELSE} Crt {$ENDIF} ;
 Var
   CopyRight: String[80];
 
-(* Function UniqueID: String; *)
+Function UniqueID: String;
 Function Trim(S:String):String;
 (*Function SetString(S:String;Lnn:Byte):String;
 Function CenterStr(Lnn:Byte;S:String):String;
 *)
 Function XStr(L:LongInt):String;
 Function XVal(S:String):Integer;
-(* Function Exist(FN:String):Boolean; *)
-(*Function StrUpCase(S:String):String;
-Function StrDownCase(S:String):String; *)
+Function Exist(FN:String):Boolean;
+Function StrUpCase(S:String):String;
+Function StrDownCase(S:String):String;
 (*Function GetWordStr(S:String;K:Integer):String;*)
-(*Function ReadString:String;
+Function ReadString:String;
 Function ReadPassword:String;
 Function ArrToString(Var Arr):String;
-Procedure Abort(Message:String); *)
+Procedure Abort(Message:String);
 Procedure ColorMsg(Color:Byte;Message:String);
 
 Implementation
@@ -73,7 +73,7 @@ End;
 Function XVal;
 Var
  I:LongInt;
- Zed: LongInt;
+ Zed: {$IFDEF VIRTUALPASCAL } LongInt {$ELSE} Integer {$ENDIF};
 Begin
  Val(S,I,Zed);
  If Zed>0 Then
@@ -81,7 +81,7 @@ Begin
  XVal:=I;
 End;
 
-(*
+
 Function Exist;
 Var
  F:File;
@@ -99,9 +99,9 @@ Begin
  Else
   Exist:=False;
  filemode:=2;
-End; *)
+End;
 
-(* Function StrUpCase;
+Function StrUpCase;
 Var
  J:Byte;
  St:String;
@@ -126,7 +126,7 @@ Begin
          St[J]:=S[J]
    end;
  StrDownCase:=St;
-End; *)
+End;
 
 (*Function GetWordStr(S:String;K:Integer):String;
 Var
@@ -150,7 +150,7 @@ Begin
  GetWordStr:=R;
 End;
 *)
-(* Function ReadPassword;
+Function ReadPassword;
 Var
  St:String;
  Ch:Char;
@@ -208,7 +208,7 @@ Procedure Abort;
 Begin
  WriteLn(Message);
  Halt(27);
-End; *)
+End;
 
 Procedure ColorMsg;
 Begin
@@ -218,7 +218,7 @@ Begin
  Writeln;
 End;
 
-(* Function ArrToString;
+Function ArrToString;
 Type
  ArrType=Array[1..255] of Byte;
 Var
@@ -235,9 +235,9 @@ Begin
    St:=St+Chr(Ar[J]);
   End;
  ArrToString:=St;
-End; *)
+End;
 
-(* Function UniqueID;
+Function UniqueID;
 Var
  S: String;
  J, B: Byte;
@@ -253,9 +253,9 @@ Begin
      S:=S+Chr(Ord('a')+(B-10));
   End;
  UniqueID:=S;
-End; *)
+End;
 
 Begin
-(*  Randomize; *)
+  Randomize;
 (*  CopyRight:='BVTools supplementary library coded by basil v. vorontsov (C)1995';*)
 End.

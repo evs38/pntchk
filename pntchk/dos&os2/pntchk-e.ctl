@@ -1,6 +1,6 @@
-;== PNTCHK 1.00.rc6 ======== PNTCHK's main control file ===================
+;== PNTCHK 1.01 ======== PNTCHK's main control file ===================
 ;
-;   PNTCHK version 1.00.rc6 (release candidate #6) configuration file
+;   PNTCHK version 1.01 configuration file
 ;
 ;   Translation (c) 2000-2004 by Pavel I.Osipov. Send any corrections/com-
 ;   ments to forsite@f770.n5020.z2.fidonet.org or forsite@spamtest.ru please

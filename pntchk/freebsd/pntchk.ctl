@@ -1,6 +1,6 @@
-;== PNTCHK 1.00.rc6 ===== PNTCHK's main control file ======================
+;== PNTCHK 1.01 ===== PNTCHK's main control file ======================
 ;
-;    Конфигуpационный файл PNTCHK веpсии 1.00.rc6 (release candidate #6)
+;    Конфигуpационный файл PNTCHK веpсии 1.01
 ;                              UNIX-версия
 ;    Ограничения: 16 символов ключевое слово и 80 символов его значение
 ;
